@@ -1,0 +1,19 @@
+CLAUDE.md
+  s_3b7c23eaf7cec5::t_e2f66ad82994b6 1-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d462817c38a5cb102c85d5ca84b6a904133d1ddc",
+  "prompts": {},
+  "sessions": {
+    "s_3b7c23eaf7cec5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "55da3c58-ead6-40e1-80ed-c4e4d7c96a9e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
