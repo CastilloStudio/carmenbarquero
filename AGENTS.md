@@ -17,6 +17,14 @@ HTML, CSS y JavaScript escritos a mano. Sin framework, sin bundler y sin
 Cualquier commit hecho a mano en `main` desaparece sin aviso en la siguiente
 compilación. Si algo se ve mal en producción, se arregla en `source`.
 
+## Issues
+
+Un bug o una mejora que no se resuelva en el cambio en curso se abre como issue
+(`bug` o `enhancement`) y se añade al tablero del estudio con el campo `Proyecto` en
+*Carmen Barquero*. El PR que lo resuelve lleva `Closes #N`. **Los issues de este
+repositorio son públicos**, como el código: lo que no deba verse fuera no se apunta
+aquí, y menos nada que tenga que ver con pacientes.
+
 ## Reglas que no son negociables
 
 ### Los textos legales no se tocan de pasada
