@@ -1,0 +1,19 @@
+CLAUDE.md
+  s_8170eaf2db0122::t_bc77bbc585aff8 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0abcaffe3851eb3ccbdcbc718a2b922ebf82c0e6",
+  "prompts": {},
+  "sessions": {
+    "s_8170eaf2db0122": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_8170eaf2db0122",
+        "model": "unknown"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
