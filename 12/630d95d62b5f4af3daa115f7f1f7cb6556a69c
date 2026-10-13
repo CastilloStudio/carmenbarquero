@@ -1,0 +1,19 @@
+consentimientoinformado.html
+  s_9b3aa817616f94::t_719d162fe03d20 136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "12630d95d62b5f4af3daa115f7f1f7cb6556a69c",
+  "prompts": {},
+  "sessions": {
+    "s_9b3aa817616f94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fa624d31-e772-49ee-8f6f-7d70ce33b3d4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
