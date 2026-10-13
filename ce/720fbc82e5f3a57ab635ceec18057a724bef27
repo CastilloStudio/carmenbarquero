@@ -1,0 +1,23 @@
+consentimientoinformado.html
+  s_988a3d31b22390::t_e9e48d83d6e68a 128-150
+css/consentimiento.css
+  s_988a3d31b22390::t_da26e2c163e2ef 390-440
+js/pdf-fill.js
+  s_988a3d31b22390::t_da42f4562e4539 133-139,173-183,228-240,328,489-585,593-600,603,615
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ce720fbc82e5f3a57ab635ceec18057a724bef27",
+  "prompts": {},
+  "sessions": {
+    "s_988a3d31b22390": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_988a3d31b22390",
+        "model": "unknown"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
