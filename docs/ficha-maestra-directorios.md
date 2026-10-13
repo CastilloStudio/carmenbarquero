@@ -85,7 +85,7 @@ desde carmenbarqueropsicologia.es
 
 **Terapia individual online**
 ```
-Terapia psicológica individual por videollamada para adultos y adolescentes. Sesiones de
+Terapia psicológica individual por videollamada para personas adultas. Sesiones de
 unos 60 minutos para trabajar ansiedad, estrés, depresión, autoestima, dependencia
 emocional, gestión emocional, duelo y transiciones vitales.
 ```
