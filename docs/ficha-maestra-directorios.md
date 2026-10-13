@@ -23,7 +23,7 @@ todo en una sola entidad. Copiar y pegar de aquí; no reescribir sobre la marcha
 | Ámbito | Toda España |
 | Ciudad base | Mérida, Badajoz, Extremadura |
 | Teléfono / WhatsApp | +34 647 855 165 |
-| Email | carmenbarqueropsicologia@gmail.com |
+| Email | contacto@carmenbarqueropsicologia.es |
 | Web | https://www.carmenbarqueropsicologia.es |
 | Instagram | https://www.instagram.com/psicologia.carmenbarquero |
 | Idioma | Español |
