@@ -69,34 +69,6 @@ form.form-contact {
   padding: 0.5rem;
 }
 
-/* Estilos específicos para checkbox */
-.form-group.checkbox-group {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.form-group.checkbox-group input[type="checkbox"] {
-  width: auto;
-  margin-right: 0.5rem;
-  margin-top: 0.2rem;
-  flex-shrink: 0;
-}
-
-.form-group.checkbox-group .checkbox-label {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: #555;
-  margin-bottom: 0;
-  min-width: auto;
-  max-width: none;
-}
-
-.form-group.checkbox-group .checkbox-label a {
-  color: var(--color-accent, #e8b665);
-  text-decoration: underline;
-}
-
 /* Información básica de protección de datos junto al formulario (primera capa) */
 .info-proteccion-datos {
   font-size: 0.8rem;
@@ -153,32 +125,6 @@ form.form-contact {
     padding: 1rem;
     font-size: 1.1rem;
     margin-top: 1rem;
-  }
-  
-  /* Estilos específicos para checkbox en móvil */
-  .form-group.checkbox-group {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-  }
-  
-  .form-group.checkbox-group input[type="checkbox"] {
-    width: auto;
-    margin-right: 0.75rem;
-    margin-top: 0.2rem;
-    flex-shrink: 0;
-  }
-  
-  .form-group.checkbox-group .checkbox-label {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: #555;
-    margin-bottom: 0;
-  }
-  
-  .form-group.checkbox-group .checkbox-label a {
-    color: var(--color-accent, #e8b665);
-    text-decoration: underline;
   }
 }
 
