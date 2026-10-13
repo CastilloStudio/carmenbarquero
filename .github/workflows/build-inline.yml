@@ -49,6 +49,7 @@ jobs:
             sed -i 's|href="politica-de-privacidad\.html"|href="https://www.carmenbarqueropsicologia.es/politica-de-privacidad"|g' "$file"
             sed -i 's|href="politica-cookies\.html"|href="https://www.carmenbarqueropsicologia.es/politica-cookies"|g' "$file"
             sed -i 's|href="aviso-legal\.html"|href="https://www.carmenbarqueropsicologia.es/aviso-legal"|g' "$file"
+            sed -i 's|href="politica-privacidad-redes-sociales\.html"|href="https://www.carmenbarqueropsicologia.es/politica-privacidad-redes-sociales"|g' "$file"
             sed -i 's|href="consentimientoinformado\.html"|href="https://www.carmenbarqueropsicologia.es/consentimientoinformado"|g' "$file"
             
             # Rutas relativas desde servicios/ - TODAS las variantes
@@ -72,6 +73,7 @@ jobs:
             sed -i 's|/politica-de-privacidad\.html"|/politica-de-privacidad"|g' "$file"
             sed -i 's|/politica-cookies\.html"|/politica-cookies"|g' "$file"
             sed -i 's|/aviso-legal\.html"|/aviso-legal"|g' "$file"
+            sed -i 's|/politica-privacidad-redes-sociales\.html"|/politica-privacidad-redes-sociales"|g' "$file"
             sed -i 's|/servicios/terapia-individual\.html"|/servicios/terapia-individual"|g' "$file"
             sed -i 's|/servicios/terapia-pareja\.html"|/servicios/terapia-pareja"|g' "$file"
             sed -i 's|/servicios/neuropsicologia-clinica\.html"|/servicios/neuropsicologia-clinica"|g' "$file"

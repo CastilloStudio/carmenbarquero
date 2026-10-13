@@ -63,7 +63,7 @@
   <!-- Política de privacidad -->
   <url>
     <loc>https://www.carmenbarqueropsicologia.es/politica-de-privacidad</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-10-13</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -71,7 +71,7 @@
   <!-- Política de cookies -->
   <url>
     <loc>https://www.carmenbarqueropsicologia.es/politica-cookies</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-10-13</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -79,7 +79,15 @@
   <!-- Aviso legal -->
   <url>
     <loc>https://www.carmenbarqueropsicologia.es/aviso-legal</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Política de privacidad en redes sociales -->
+  <url>
+    <loc>https://www.carmenbarqueropsicologia.es/politica-privacidad-redes-sociales</loc>
+    <lastmod>2026-10-13</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
