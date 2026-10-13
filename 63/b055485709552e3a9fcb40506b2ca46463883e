@@ -1,0 +1,47 @@
+aviso-legal.html
+  s_9b3aa817616f94::t_be06e93387c992 107,137,139,191,239,325
+consentimientoinformado-pareja.html
+  s_9b3aa817616f94::t_36396ed51f22b5 256
+consentimientoinformado.html
+  s_9b3aa817616f94::t_60233ef5863872 178
+contacto.html
+  s_9b3aa817616f94::t_ecf7415d70dd5c 82,187,253
+docs/ficha-maestra-directorios.md
+  s_9b3aa817616f94::t_e3e4280e23b148 26
+ficha-clinica.html
+  s_9b3aa817616f94::t_a55eda2cf5ca78 179
+index.html
+  s_9b3aa817616f94::t_80a68a4730de79 111,174,179,692
+llms.txt
+  s_9b3aa817616f94::t_1b9d6c8e5555ec 19
+politica-cookies.html
+  s_9b3aa817616f94::t_9b6aeca2313680 109,262,294
+politica-de-privacidad.html
+  s_9b3aa817616f94::t_93bed6f68f6cf3 119,138-139,272-273,334,362
+psicologia-online.html
+  s_9b3aa817616f94::t_27bef3a343b18a 489
+reserva-cita.html
+  s_9b3aa817616f94::t_6211dc09daeaf6 271,319
+servicios/neuropsicologia-clinica.html
+  s_9b3aa817616f94::t_348b52ceb3b675 466
+servicios/terapia-individual.html
+  s_9b3aa817616f94::t_9b45bba57c9bb0 488
+servicios/terapia-pareja.html
+  s_9b3aa817616f94::t_58252fc95efba4 489
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "63b055485709552e3a9fcb40506b2ca46463883e",
+  "prompts": {},
+  "sessions": {
+    "s_9b3aa817616f94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fa624d31-e772-49ee-8f6f-7d70ce33b3d4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
