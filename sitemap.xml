@@ -84,12 +84,4 @@
     <priority>0.3</priority>
   </url>
 
-  <!-- Política de privacidad en redes sociales -->
-  <url>
-    <loc>https://www.carmenbarqueropsicologia.es/politica-privacidad-redes-sociales</loc>
-    <lastmod>2026-10-13</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
 </urlset>
