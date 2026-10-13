@@ -1,0 +1,49 @@
+.github/workflows/build-inline.yml
+  s_9b3aa817616f94::t_6190061c89a504 52,76
+aviso-legal.html
+  s_9b3aa817616f94::t_e87c4b26727999 109-115,117,119-121,123,125-127,129-130,133,135,137,143,147-149,151,153-156,158-162,164-166,168,170-171,173-182,184-186,188-190,192-196,198-317,319-331,334,336-338,340,342-343,345-347,349-350,352,354-355,357,359-360,362,364-431,433-439,458-486,488-489,491-501,513
+consentimientoinformado-pareja.html
+  s_9b3aa817616f94::t_9c991996aa4dfc 241
+consentimientoinformado.html
+  s_9b3aa817616f94::t_de0744dc4f2e8d 163
+contacto.html
+  s_9b3aa817616f94::t_d7d84d6c286e1a 238
+ficha-clinica.html
+  s_9b3aa817616f94::t_f7530f2d39fe39 164
+index.html
+  s_9b3aa817616f94::t_44cc3139b35b9a 677
+politica-cookies.html
+  s_9b3aa817616f94::t_5871dc0f9f78c8 111,113-120,123,125-128,130-193,195-205,207,209-210,213,218,221,226,228,235,240,243,248,250,254,256,264-266,269,271-272,274-295,298-301,303-304,306-308,311-314,317,319-322,331,333-334,337-339,342,344-348,351-356,368
+politica-de-privacidad.html
+  s_9b3aa817616f94::t_531d3cc6faa33d 347
+politica-privacidad-redes-sociales.html
+  s_9b3aa817616f94::t_11dcaaec4b8133 1-320
+psicologia-online.html
+  s_9b3aa817616f94::t_871d3bcafc7758 474
+reserva-cita.html
+  s_9b3aa817616f94::t_285fca5326bc2c 304
+servicios/neuropsicologia-clinica.html
+  s_9b3aa817616f94::t_c82434482e5379 451
+servicios/terapia-individual.html
+  s_9b3aa817616f94::t_1d022e1e59b820 473
+servicios/terapia-pareja.html
+  s_9b3aa817616f94::t_4f98c17bf25aca 474
+sitemap.xml
+  s_9b3aa817616f94::t_3c30d918b0ad9b 66,74,82-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1bf9c4f2cce25c14db312d06771156ecbefebfc3",
+  "prompts": {},
+  "sessions": {
+    "s_9b3aa817616f94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fa624d31-e772-49ee-8f6f-7d70ce33b3d4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
