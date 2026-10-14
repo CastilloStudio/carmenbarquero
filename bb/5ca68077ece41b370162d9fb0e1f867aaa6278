@@ -1,0 +1,21 @@
+politica-de-privacidad.html
+  s_0f18f2efdffe41::t_41662719c38768 119,356
+sitemap.xml
+  s_0f18f2efdffe41::t_25f210864964d7 66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bb5ca68077ece41b370162d9fb0e1f867aaa6278",
+  "prompts": {},
+  "sessions": {
+    "s_0f18f2efdffe41": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "923fcbff-d307-4428-b964-c6fcc3ad1af2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
