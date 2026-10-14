@@ -1,0 +1,19 @@
+consentimientoinformado.html
+  s_6521121301cd6d::t_500604babe9bde 143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7d1a2c3ed393e718c2d23a5d3a04af8085d1a865",
+  "prompts": {},
+  "sessions": {
+    "s_6521121301cd6d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_6521121301cd6d",
+        "model": "unknown"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
