@@ -42,13 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     
-    // Validar checkbox de privacidad si existe
-    var checkboxPrivacidad = form.querySelector('input[name="aceptar-privacidad"]');
-    if (checkboxPrivacidad && !checkboxPrivacidad.checked) {
-      mostrarAlerta('Debes aceptar la Política de Privacidad para continuar.', 'error');
-      return;
-    }
-    
     var datos = {
       nombre: form.nombre.value,
       apellidos: form.apellidos.value,
@@ -58,11 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Añadir edad solo si tiene valor
     if (form.edad.value.trim()) {
       datos.edad = form.edad.value;
-    }
-    
-    // Añadir confirmación de privacidad a los datos si existe
-    if (checkboxPrivacidad) {
-      datos.privacidad_aceptada = checkboxPrivacidad.checked;
     }
 
     fetch("https://formspree.io/f/xnngndvr", {
