@@ -130,6 +130,13 @@ window.addEventListener("DOMContentLoaded", function () {
     mes.value = meses[hoy.getMonth()];
   }
   if (anio) anio.value = hoy.getFullYear();
+
+  // Al marcar una casilla obligatoria se quita la marca de error
+  for (const casilla of casillasProteccionDatos()) {
+    casilla.input.addEventListener("change", () => {
+      if (casilla.input.checked) casilla.input.closest('.casilla-obligatoria')?.classList.remove('campo-error');
+    });
+  }
 });
 
 // Verificar si el canvas tiene firma
@@ -161,6 +168,17 @@ function parsearFecha(fechaStr) {
   
   console.warn("⚠️ No se pudo parsear la fecha");
   return { dia: "", mes: "", anio: "" };
+}
+
+// Casillas obligatorias del bloque de protección de datos (vacío si la página no lo tiene)
+function casillasProteccionDatos() {
+  const definicion = [
+    { id: "consiente-tratamiento", clave: "consienteTratamiento", error: "Casilla de consentimiento del tratamiento de datos" },
+    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" }
+  ];
+  return definicion
+    .map(c => ({ ...c, input: document.getElementById(c.id) }))
+    .filter(c => c.input);
 }
 
 // Validar formulario
@@ -207,7 +225,19 @@ function validarFormulario() {
   if (!tieneCanvasFirma()) {
     errores.push("Firma manuscrita");
   }
-  
+
+  // Las dos casillas de protección de datos son obligatorias: sin ellas no se presta el servicio.
+  // Solo existen en el consentimiento individual; la ficha clínica comparte este script y no las lleva.
+  for (const casilla of casillasProteccionDatos()) {
+    const contenedor = casilla.input.closest('.casilla-obligatoria');
+    if (!casilla.input.checked) {
+      errores.push(casilla.error);
+      contenedor?.classList.add('campo-error');
+    } else {
+      contenedor?.classList.remove('campo-error');
+    }
+  }
+
   // Mostrar errores en panel
   const panelErrores = document.getElementById("errores-validacion");
   if (errores.length > 0) {
@@ -295,6 +325,7 @@ async function generatePDF() {
     // Rellenar el PDF
     const coordenadasFirma = usarAnterior ? coordenadasFirmaPorPlantilla.anterior : coordenadasFirmaPorPlantilla.actual;
     await rellenarPDFOriginal(pdfDoc, datos, fechaParsed, coordenadasFirma);
+    await anadirPaginaProteccionDatos(pdfDoc, datos);
 
     // Adjuntar los datos en formato estructurado (JSON) para que otra app pueda recuperarlos
     await adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed);
@@ -455,6 +486,103 @@ async function anadirFirma(pdfDoc, coordenadasFirma) {
   }
 }
 
+// Añadir al final del PDF la página de protección de datos: el texto del bloque tal como se ve en la
+// web, las dos casillas marcadas y la firma. La plantilla no tiene sitio para este texto.
+async function anadirPaginaProteccionDatos(pdfDoc, datos) {
+  const bloque = document.getElementById("proteccion-datos");
+  if (!bloque) return;
+
+  const { rgb, StandardFonts } = PDFLib;
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const negrita = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const color = rgb(0, 0, 0);
+  const ancho = 595.28, alto = 841.89, margen = 50;
+  const anchoTexto = ancho - 2 * margen;
+  const tamano = 9.5, interlineado = 13;
+
+  let page = pdfDoc.addPage([ancho, alto]);
+  let y = alto - margen;
+  const asegurarEspacio = (necesario) => {
+    if (y - necesario < margen) {
+      page = pdfDoc.addPage([ancho, alto]);
+      y = alto - margen;
+    }
+  };
+  const limpiar = (texto) => texto.replace(/\s+/g, " ").trim();
+
+  // Escribe un párrafo con un prefijo en negrita, partiendo las líneas por palabras
+  const parrafo = (enNegrita, resto, x = margen, anchoMax = anchoTexto) => {
+    const palabras = [
+      ...limpiar(enNegrita).split(" ").filter(Boolean).map(p => ({ p, font: negrita })),
+      ...limpiar(resto).split(" ").filter(Boolean).map(p => ({ p, font: regular }))
+    ];
+    const espacio = regular.widthOfTextAtSize(" ", tamano);
+    let linea = [], anchoLinea = 0;
+    const volcar = () => {
+      asegurarEspacio(interlineado);
+      let cx = x;
+      for (const { p, font } of linea) {
+        page.drawText(p, { x: cx, y: y - tamano, size: tamano, font, color });
+        cx += font.widthOfTextAtSize(p, tamano) + espacio;
+      }
+      y -= interlineado;
+      linea = [];
+      anchoLinea = 0;
+    };
+    for (const palabra of palabras) {
+      const w = palabra.font.widthOfTextAtSize(palabra.p, tamano);
+      if (linea.length && anchoLinea + espacio + w > anchoMax) volcar();
+      anchoLinea += (linea.length ? espacio : 0) + w;
+      linea.push(palabra);
+    }
+    if (linea.length) volcar();
+    y -= 5;
+  };
+
+  const titulo = limpiar(bloque.querySelector("h3")?.textContent || "Protección de datos personales");
+  page.drawText(titulo, { x: margen, y: y - 14, size: 14, font: negrita, color });
+  y -= 30;
+
+  for (const p of bloque.querySelectorAll(":scope > p:not(.casillas-nota)")) {
+    const etiqueta = p.querySelector("strong")?.textContent || "";
+    parrafo(etiqueta, p.textContent.replace(etiqueta, ""));
+  }
+
+  y -= 6;
+  for (const casilla of casillasProteccionDatos()) {
+    asegurarEspacio(3 * interlineado);
+    const lado = 9, xCasilla = margen, yCasilla = y - lado - 1;
+    page.drawRectangle({ x: xCasilla, y: yCasilla, width: lado, height: lado, borderColor: color, borderWidth: 0.8 });
+    if (casilla.input.checked) {
+      page.drawLine({ start: { x: xCasilla + 1.5, y: yCasilla + 1.5 }, end: { x: xCasilla + lado - 1.5, y: yCasilla + lado - 1.5 }, thickness: 1.2, color });
+      page.drawLine({ start: { x: xCasilla + 1.5, y: yCasilla + lado - 1.5 }, end: { x: xCasilla + lado - 1.5, y: yCasilla + 1.5 }, thickness: 1.2, color });
+    }
+    const etiqueta = document.querySelector(`label[for="${casilla.id}"]`)?.textContent || "";
+    parrafo("", etiqueta, margen + lado + 8, anchoTexto - lado - 8);
+  }
+
+  // Quién firma y cuándo, con la misma firma que la página de firmas de la plantilla
+  const diaFirma = document.getElementById("dia")?.value || "";
+  const mesFirma = document.getElementById("mes")?.value || "";
+  const anioFirma = document.getElementById("anio")?.value || "";
+  asegurarEspacio(120);
+  y -= 10;
+  parrafo("Paciente:", `${datos.nombreApellidos} — DNI/NIE: ${datos.dni}`);
+  parrafo("", `En ${datos.lugar}, a ${diaFirma} de ${mesFirma} de ${anioFirma}`);
+  parrafo("Firma del paciente:", "");
+
+  const canvas = document.getElementById("canvas-firma");
+  if (canvas && tieneCanvasFirma()) {
+    const firmaBytes = await fetch(canvas.toDataURL("image/png")).then(res => res.arrayBuffer());
+    const firmaImage = await pdfDoc.embedPng(firmaBytes);
+    const ratio = Math.min(180 / firmaImage.width, 60 / firmaImage.height);
+    const firmaHeight = firmaImage.height * ratio;
+    page.drawImage(firmaImage, { x: margen, y: y - firmaHeight, width: firmaImage.width * ratio, height: firmaHeight });
+  }
+
+  console.log("✓ Página de protección de datos añadida");
+}
+
 // Adjuntar datos estructurados (JSON) embebidos en el PDF para recuperación programática
 async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
   try {
@@ -462,9 +590,17 @@ async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
     const mesFirma = document.getElementById("mes")?.value || "";
     const anioFirma = document.getElementById("anio")?.value || "";
 
+    const casillas = casillasProteccionDatos();
+    const proteccionDatos = casillas.length
+      ? {
+          clausulas: document.getElementById("proteccion-datos")?.dataset.clausulas || "",
+          ...Object.fromEntries(casillas.map(c => [c.clave, c.input.checked]))
+        }
+      : undefined;
+
     const datosEstructurados = {
       tipo: "consentimiento-individual",
-      version: 2,
+      version: proteccionDatos ? 3 : 2,
       nombre: datos.nombre,
       apellidos: datos.apellidos,
       nombreApellidos: datos.nombreApellidos,
@@ -476,6 +612,7 @@ async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
       codigoPostal: datos.codigoPostal,
       lugar: datos.lugar,
       fechaFirma: `${diaFirma}/${mesFirma}/${anioFirma}`,
+      proteccionDatos,
       generadoEl: new Date().toISOString()
     };
 
