@@ -217,6 +217,8 @@ jobs:
           [ -f robots.txt ] && cp robots.txt dist/
           [ -f llms.txt ] && cp llms.txt dist/
           [ -f CNAME ] && cp CNAME dist/
+          # Prueba de Search Console: si deja de publicarse, Google desverifica la propiedad
+          [ -f google37cf596a386f6881.html ] && cp google37cf596a386f6881.html dist/
           [ -f favicon.ico ] && cp favicon.ico dist/
           
           echo "🎉 BUILD COMPLETADO"
