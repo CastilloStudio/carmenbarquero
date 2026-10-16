@@ -1,0 +1,19 @@
+.github/workflows/build-inline.yml
+  s_2fe0a845a0ee3f::t_3fdc997270dbce 220-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "962567c100b371a0d36f66830bc642ec92657dfc",
+  "prompts": {},
+  "sessions": {
+    "s_2fe0a845a0ee3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c4e7443-55a3-430b-b64a-cabe87a6a2ff",
+        "model": "unknown"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
