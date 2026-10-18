@@ -140,19 +140,21 @@ window.addEventListener("DOMContentLoaded", function () {
   if (anio) anio.value = hoy.getFullYear();
 
   // Al marcar una casilla obligatoria se quita la marca de error
-  for (const casilla of casillasProteccionDatos()) {
+  for (const casilla of casillasObligatorias()) {
     casilla.input.addEventListener("change", () => {
       if (casilla.input.checked) casilla.input.closest('.casilla-obligatoria')?.classList.remove('campo-error');
     });
   }
 });
 
-// Casillas obligatorias del bloque de protección de datos. La plantilla las trae ya marcadas,
+// Casillas obligatorias: las dos de protección de datos y la de conformidad. La plantilla las trae ya marcadas,
 // así que el PDF solo se genera si la pareja las ha marcado en la web.
-function casillasProteccionDatos() {
+function casillasObligatorias() {
   const definicion = [
     { id: "consiente-tratamiento", clave: "consienteTratamiento", error: "Casilla de consentimiento del tratamiento de datos" },
-    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" }
+    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" },
+    // La tercera no es de protección de datos: es la conformidad con la intervención, al final del documento
+    { id: "conformidad-intervencion", clave: "conformidadIntervencion", error: "Casilla de conformidad con la intervención", fueraDeProteccionDatos: true }
   ];
   return definicion
     .map(c => ({ ...c, input: document.getElementById(c.id) }))
@@ -168,6 +170,14 @@ function tieneCanvasFirma(canvasId) {
     if (pixelData[i] > 0) return true;
   }
   return false;
+}
+
+// Solo se atiende a personas adultas: 18 años cumplidos el día que se firma
+const EDAD_MINIMA = 18;
+function esMayorDeEdad(dia, mes, anio, hoy = new Date()) {
+  const cumple18 = new Date(Number(anio) + EDAD_MINIMA, Number(mes) - 1, Number(dia));
+  const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  return cumple18 <= hoySinHora;
 }
 
 function validarFormulario() {
@@ -211,6 +221,11 @@ function validarFormulario() {
       fechaDia?.classList.add('campo-error');
       fechaMes?.classList.add('campo-error');
       fechaAnio?.classList.add('campo-error');
+    } else if (!esMayorDeEdad(fechaDia.value, fechaMes.value, fechaAnio.value)) {
+      errores.push(`La persona ${sufijo} tiene que ser mayor de edad (${EDAD_MINIMA} años) para firmar este consentimiento`);
+      fechaDia.classList.add('campo-error');
+      fechaMes.classList.add('campo-error');
+      fechaAnio.classList.add('campo-error');
     } else {
       fechaDia?.classList.remove('campo-error');
       fechaMes?.classList.remove('campo-error');
@@ -221,8 +236,8 @@ function validarFormulario() {
   if (!tieneCanvasFirma("canvas-firma-1")) errores.push("Firma de la primera persona");
   if (!tieneCanvasFirma("canvas-firma-2")) errores.push("Firma de la segunda persona");
 
-  // Las dos casillas de protección de datos son obligatorias: sin ellas no se presta el servicio.
-  for (const casilla of casillasProteccionDatos()) {
+  // Las tres casillas son obligatorias: sin ellas no se presta el servicio.
+  for (const casilla of casillasObligatorias()) {
     const contenedor = casilla.input.closest('.casilla-obligatoria');
     if (!casilla.input.checked) {
       errores.push(casilla.error);
@@ -443,13 +458,15 @@ async function adjuntarDatosEstructurados(pdfDoc, datos1, datos2, fecha1, fecha2
     const anioFirma = document.getElementById("anio")?.value || "";
     const lugar = document.getElementById("lugar")?.value || "";
 
-    const casillas = casillasProteccionDatos();
-    const proteccionDatos = casillas.length
+    const casillas = casillasObligatorias();
+    const dePD = casillas.filter(c => !c.fueraDeProteccionDatos);
+    const proteccionDatos = dePD.length
       ? {
           clausulas: document.getElementById("proteccion-datos")?.dataset.clausulas || "",
-          ...Object.fromEntries(casillas.map(c => [c.clave, c.input.checked]))
+          ...Object.fromEntries(dePD.map(c => [c.clave, c.input.checked]))
         }
       : undefined;
+    const conformidadIntervencion = casillas.find(c => c.fueraDeProteccionDatos)?.input.checked;
 
     const datosEstructurados = {
       tipo: "consentimiento-pareja",
@@ -479,6 +496,7 @@ async function adjuntarDatosEstructurados(pdfDoc, datos1, datos2, fecha1, fecha2
         codigoPostal: datos2.codigoPostal
       },
       proteccionDatos,
+      conformidadIntervencion,
       generadoEl: new Date().toISOString()
     };
 
