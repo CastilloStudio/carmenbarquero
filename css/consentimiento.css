@@ -256,25 +256,27 @@
   border-radius: 4px;
 }
 
+/* «Repetir firma»: un enlace discreto, no un botón. Está entre la firma y «Confirmar»,
+   y con aspecto de botón se pulsaba sin querer, sobre todo en el móvil. */
 .btn-limpiar-firma {
-  margin-top: 1rem;
-  padding: 8px 16px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  display: block;
+  margin: 0.4rem 0 0 auto;
+  padding: 4px 2px;
+  background: none;
+  border: none;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #666;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 0.8rem;
+  color: #888;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .btn-limpiar-firma:hover {
-  background: #f0f0f0;
-  border-color: #999;
-  color: #333;
+  color: #444;
+}
+
+.btn-limpiar-firma[hidden] {
+  display: none;
 }
 
 /* Botón confirmar mejorado */

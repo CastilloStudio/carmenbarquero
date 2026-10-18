@@ -37,6 +37,8 @@ function setupCanvas(canvasId, limpiarId) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   let dibujando = false;
+  // «Repetir firma»: solo se muestra cuando ya hay algo firmado
+  const botonLimpiar = document.getElementById(limpiarId);
 
   ctx.strokeStyle = "#1a1a1a";
   ctx.lineWidth = 2;
@@ -55,6 +57,7 @@ function setupCanvas(canvasId, limpiarId) {
 
   canvas.addEventListener("mousedown", (e) => {
     dibujando = true;
+    if (botonLimpiar) botonLimpiar.hidden = false;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -71,6 +74,7 @@ function setupCanvas(canvasId, limpiarId) {
   canvas.addEventListener("touchstart", (e) => {
     e.preventDefault();
     dibujando = true;
+    if (botonLimpiar) botonLimpiar.hidden = false;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -86,8 +90,9 @@ function setupCanvas(canvasId, limpiarId) {
 
   canvas.addEventListener("touchend", () => (dibujando = false));
 
-  document.getElementById(limpiarId)?.addEventListener("click", function () {
+  botonLimpiar?.addEventListener("click", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    botonLimpiar.hidden = true;
   });
 }
 

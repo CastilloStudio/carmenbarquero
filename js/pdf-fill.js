@@ -55,8 +55,11 @@ window.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  const botonLimpiar = document.getElementById("limpiar-firma");
+
   canvas.addEventListener("mousedown", (e) => {
     dibujando = true;
+    if (botonLimpiar) botonLimpiar.hidden = false;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -74,6 +77,7 @@ window.addEventListener("DOMContentLoaded", function () {
   canvas.addEventListener("touchstart", (e) => {
     e.preventDefault();
     dibujando = true;
+    if (botonLimpiar) botonLimpiar.hidden = false;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -89,9 +93,10 @@ window.addEventListener("DOMContentLoaded", function () {
   
   canvas.addEventListener("touchend", () => (dibujando = false));
 
-  // Botón limpiar
-  document.getElementById("limpiar-firma")?.addEventListener("click", function () {
+  // «Repetir firma»: solo se muestra cuando ya hay algo firmado
+  botonLimpiar?.addEventListener("click", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    botonLimpiar.hidden = true;
   });
 
   // Poblar selects de fecha de nacimiento
