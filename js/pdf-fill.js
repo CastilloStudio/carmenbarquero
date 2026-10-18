@@ -137,7 +137,7 @@ window.addEventListener("DOMContentLoaded", function () {
   if (anio) anio.value = hoy.getFullYear();
 
   // Al marcar una casilla obligatoria se quita la marca de error
-  for (const casilla of casillasProteccionDatos()) {
+  for (const casilla of casillasObligatorias()) {
     casilla.input.addEventListener("change", () => {
       if (casilla.input.checked) casilla.input.closest('.casilla-obligatoria')?.classList.remove('campo-error');
     });
@@ -175,16 +175,26 @@ function parsearFecha(fechaStr) {
   return { dia: "", mes: "", anio: "" };
 }
 
-// Casillas obligatorias del bloque de protección de datos. Las plantillas las traen ya marcadas,
+// Casillas obligatorias: las dos de protección de datos y la de conformidad. Las plantillas las traen ya marcadas,
 // así que el PDF solo se genera si la persona las ha marcado en la web.
-function casillasProteccionDatos() {
+function casillasObligatorias() {
   const definicion = [
     { id: "consiente-tratamiento", clave: "consienteTratamiento", error: "Casilla de consentimiento del tratamiento de datos" },
-    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" }
+    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" },
+    // La tercera no es de protección de datos: es la conformidad con la intervención, al final del documento
+    { id: "conformidad-intervencion", clave: "conformidadIntervencion", error: "Casilla de conformidad con la intervención", fueraDeProteccionDatos: true }
   ];
   return definicion
     .map(c => ({ ...c, input: document.getElementById(c.id) }))
     .filter(c => c.input);
+}
+
+// Solo se atiende a personas adultas: 18 años cumplidos el día que se firma
+const EDAD_MINIMA = 18;
+function esMayorDeEdad(dia, mes, anio, hoy = new Date()) {
+  const cumple18 = new Date(Number(anio) + EDAD_MINIMA, Number(mes) - 1, Number(dia));
+  const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  return cumple18 <= hoySinHora;
 }
 
 // Validar formulario
@@ -222,6 +232,11 @@ function validarFormulario() {
     fechaDia?.classList.add('campo-error');
     fechaMes?.classList.add('campo-error');
     fechaAnio?.classList.add('campo-error');
+  } else if (!esMayorDeEdad(fechaDia.value, fechaMes.value, fechaAnio.value)) {
+    errores.push(`Es necesario ser mayor de edad (${EDAD_MINIMA} años) para firmar este consentimiento`);
+    fechaDia.classList.add('campo-error');
+    fechaMes.classList.add('campo-error');
+    fechaAnio.classList.add('campo-error');
   } else {
     fechaDia?.classList.remove('campo-error');
     fechaMes?.classList.remove('campo-error');
@@ -232,8 +247,8 @@ function validarFormulario() {
     errores.push("Firma manuscrita");
   }
 
-  // Las dos casillas de protección de datos son obligatorias: sin ellas no se presta el servicio.
-  for (const casilla of casillasProteccionDatos()) {
+  // Las tres casillas son obligatorias: sin ellas no se presta el servicio.
+  for (const casilla of casillasObligatorias()) {
     const contenedor = casilla.input.closest('.casilla-obligatoria');
     if (!casilla.input.checked) {
       errores.push(casilla.error);
@@ -497,13 +512,15 @@ async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
     const mesFirma = document.getElementById("mes")?.value || "";
     const anioFirma = document.getElementById("anio")?.value || "";
 
-    const casillas = casillasProteccionDatos();
-    const proteccionDatos = casillas.length
+    const casillas = casillasObligatorias();
+    const dePD = casillas.filter(c => !c.fueraDeProteccionDatos);
+    const proteccionDatos = dePD.length
       ? {
           clausulas: document.getElementById("proteccion-datos")?.dataset.clausulas || "",
-          ...Object.fromEntries(casillas.map(c => [c.clave, c.input.checked]))
+          ...Object.fromEntries(dePD.map(c => [c.clave, c.input.checked]))
         }
       : undefined;
+    const conformidadIntervencion = casillas.find(c => c.fueraDeProteccionDatos)?.input.checked;
 
     const datosEstructurados = {
       tipo: "consentimiento-individual",
@@ -520,6 +537,7 @@ async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
       lugar: datos.lugar,
       fechaFirma: `${diaFirma}/${mesFirma}/${anioFirma}`,
       proteccionDatos,
+      conformidadIntervencion,
       generadoEl: new Date().toISOString()
     };
 
