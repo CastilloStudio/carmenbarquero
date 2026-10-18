@@ -173,7 +173,7 @@
                 <li>La confidencialidad puede verse comprometida si los pacientes no garantizan un entorno privado durante las sesiones.</li>
               </ul>
             </li>
-            <li><strong>Alternativas:</strong> El/la paciente tiene derecho a solicitar atención presencial o derivación a otros profesionales o servicios de salud.</li>
+            <li><strong>Alternativas:</strong> El/la paciente tiene derecho a solicitar la derivación a otros profesionales o servicios de salud.</li>
             <li><strong>Confidencialidad:</strong> Toda la información recabada será tratada con absoluta confidencialidad, en cumplimiento del Reglamento General de Protección de Datos y la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales, asegurando que todos los datos personales se recogerán en el fichero del paciente con la única finalidad de ejercer las funciones propias de la actividad profesional que la justifica. En concreto, el correo electrónico se emplea para la gestión de citas y comunicaciones relacionadas con el servicio, y el domicilio para la emisión de facturas. Las sesiones no serán grabadas sin consentimiento expreso de la persona usuaria.</li>
             <li><strong>Derecho a revocar el consentimiento:</strong> La persona usuaria podrá interrumpir la intervención o retirar su consentimiento en cualquier momento, sin que ello suponga perjuicio alguno ni obligación de justificar su decisión.</li>
             <li><strong>Precio de las sesiones y método de pago:</strong> Las sesiones de terapia de pareja tienen un coste de 80 euros por sesión. El pago de la sesión deberá realizarse por adelantado, antes del inicio de cada consulta, a través del medio de pago acordado entre la profesional y las personas usuarias. La sesión quedará confirmada una vez se haya recibido el importe correspondiente. En caso de no haberse efectuado el pago previo, la sesión podrá ser cancelada o reprogramada.</li>
@@ -189,6 +189,29 @@
             <p>
               Manifiesto mi conformidad para iniciar la intervención psicológica en modalidad online en las condiciones expuestas.
             </p>
+          </div>
+          <!-- Cláusula de la consultora (Cláusulas de internet V-PVA0926, 07-10-2026). La plantilla PDF lleva
+               este mismo texto con las casillas ya marcadas: por eso el PDF no se genera sin marcarlas aquí. -->
+          <div class="bloque-proteccion-datos" id="proteccion-datos" data-clausulas="V-PVA0926">
+            <h3>Protección de datos personales</h3>
+            <p><strong>Finalidad del tratamiento:</strong> Utilizaremos sus datos para la prestación de asistencia sanitaria, incluyendo la gestión de los servicios sanitarios y de administración del centro que impliquen la misma: mantenimiento del historial clínico, citas, emisión de justificantes, atención de consultas, atención de incidencias y remisión de comunicaciones por mensajería instantánea estrictamente vinculadas a nuestra relación.</p>
+            <p><strong>Legitimación del tratamiento:</strong> para la ejecución de un contrato o precontrato con el interesado (artículo 6.1.b RGPD) y el cumplimiento de una obligación legal (artículo 6.1.c RGPD).</p>
+            <p><strong>Excepción para categorías especiales de datos:</strong> para fines de medicina preventiva o laboral, diagnóstico médico, prestación de asistencia sanitaria o social, o gestión de sus sistemas y servicios, sobre la base de una Ley o en virtud de un contrato con un profesional sanitario (artículo 9.2.h RGPD).</p>
+            <p><strong>Criterios de conservación de los datos:</strong> conservados mientras existan prescripciones legales que dictaminen la custodia.</p>
+            <p><strong>Comunicación de los datos:</strong> se informa de que no se comunican los datos a terceros, salvo por obligación legal o cuando sea necesario para la prestación de asistencia sanitaria entre profesionales o entidades sanitarias que intervengan en su diagnóstico o tratamiento.</p>
+            <p><strong>Transferencia internacional de datos:</strong> para la adecuada gestión administrativa y clínica, sus datos personales podrán ser tratados a través de herramientas informáticas y servicios de soporte que, en algunos casos, implican transferencias internacionales de datos fuera del Espacio Económico Europeo (EEE). En cualquier caso, sus datos estarán protegidos bajo las garantías exigidas por la normativa vigente en materia de protección de datos.</p>
+            <p><strong>Derechos que asisten al interesado:</strong> derecho a retirar el consentimiento en cualquier momento, cuando el tratamiento se base en el consentimiento del interesado. Derecho de acceso, rectificación, portabilidad y supresión de sus datos y de limitación u oposición a su tratamiento. Derecho a presentar una reclamación ante la Autoridad de control (www.aepd.es) si considera que el tratamiento no se ajusta a la normativa vigente.</p>
+            <p><strong>Datos de contacto y ejercicio de sus derechos:</strong> CARMEN BARQUERO MACÍAS, Camino Magdalena, 62 3ºB, 06800 Mérida (Badajoz), España, contacto@carmenbarqueropsicologia.es.</p>
+
+            <div class="casilla-obligatoria">
+              <input type="checkbox" id="consiente-tratamiento" name="consiente-tratamiento" />
+              <label for="consiente-tratamiento">Los interesados han sido informados y consienten los tratamientos de sus datos en los términos expuestos.</label>
+            </div>
+            <div class="casilla-obligatoria">
+              <input type="checkbox" id="autoriza-videoconferencia" name="autoriza-videoconferencia" />
+              <label for="autoriza-videoconferencia">Autorizan a que el servicio psicológico se realice mediante videoconferencia. Los pacientes declaran haber sido informados de las características de esta modalidad asistencial y prestan su conformidad para la realización de las sesiones por medios telemáticos.</label>
+            </div>
+            <p class="casillas-nota">Las dos casillas son de marcación obligatoria para poder prestar el servicio solicitado.</p>
           </div>
 
           <h3>Firmas</h3>
@@ -208,8 +231,7 @@
               <div class="canvas-container">
                 <canvas id="canvas-firma-1" width="400" height="150"></canvas>
               </div>
-              <button type="button" id="limpiar-firma-1" class="btn-limpiar-firma">
-                <span>🗑️</span> Limpiar firma
+              <button type="button" id="limpiar-firma-1" class="btn-limpiar-firma" hidden>Repetir firma
               </button>
             </div>
             <div class="bloque-firma">
@@ -217,8 +239,7 @@
               <div class="canvas-container">
                 <canvas id="canvas-firma-2" width="400" height="150"></canvas>
               </div>
-              <button type="button" id="limpiar-firma-2" class="btn-limpiar-firma">
-                <span>🗑️</span> Limpiar firma
+              <button type="button" id="limpiar-firma-2" class="btn-limpiar-firma" hidden>Repetir firma
               </button>
             </div>
           </div>

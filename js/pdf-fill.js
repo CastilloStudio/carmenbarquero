@@ -15,21 +15,21 @@ const coordenadas = {
   codigoPostal: { x: 178, y: 473 }
 };
 
-// Página 3 (firma) difiere entre plantillas por el distinto texto de cada una
+// La firma va en la última página (la 4) y su altura difiere entre plantillas por el distinto texto de cada una
 const coordenadasFirmaPorPlantilla = {
   actual: {
-    lugar: { x: 123, y: 579 },
-    firmaFechaDia: { x: 235, y: 579 },
-    firmaFechaMes: { x: 273, y: 579 },
-    firmaFechaAnio: { x: 366, y: 579 },
-    firmaImagen: { x: 115, y: 470 }
+    lugar: { x: 123, y: 616 },
+    firmaFechaDia: { x: 235, y: 616 },
+    firmaFechaMes: { x: 273, y: 616 },
+    firmaFechaAnio: { x: 366, y: 616 },
+    firmaImagen: { x: 115, y: 507 }
   },
   anterior: {
-    lugar: { x: 123, y: 553 },
-    firmaFechaDia: { x: 235, y: 553 },
-    firmaFechaMes: { x: 273, y: 553 },
-    firmaFechaAnio: { x: 366, y: 553 },
-    firmaImagen: { x: 115, y: 444 }
+    lugar: { x: 123, y: 603 },
+    firmaFechaDia: { x: 235, y: 603 },
+    firmaFechaMes: { x: 273, y: 603 },
+    firmaFechaAnio: { x: 366, y: 603 },
+    firmaImagen: { x: 115, y: 494 }
   }
 };
 // --- Firma manuscrita en canvas ---
@@ -55,8 +55,11 @@ window.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  const botonLimpiar = document.getElementById("limpiar-firma");
+
   canvas.addEventListener("mousedown", (e) => {
     dibujando = true;
+    if (botonLimpiar) botonLimpiar.hidden = false;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -74,6 +77,7 @@ window.addEventListener("DOMContentLoaded", function () {
   canvas.addEventListener("touchstart", (e) => {
     e.preventDefault();
     dibujando = true;
+    if (botonLimpiar) botonLimpiar.hidden = false;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -89,9 +93,10 @@ window.addEventListener("DOMContentLoaded", function () {
   
   canvas.addEventListener("touchend", () => (dibujando = false));
 
-  // Botón limpiar
-  document.getElementById("limpiar-firma")?.addEventListener("click", function () {
+  // «Repetir firma»: solo se muestra cuando ya hay algo firmado
+  botonLimpiar?.addEventListener("click", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    botonLimpiar.hidden = true;
   });
 
   // Poblar selects de fecha de nacimiento
@@ -130,6 +135,13 @@ window.addEventListener("DOMContentLoaded", function () {
     mes.value = meses[hoy.getMonth()];
   }
   if (anio) anio.value = hoy.getFullYear();
+
+  // Al marcar una casilla obligatoria se quita la marca de error
+  for (const casilla of casillasProteccionDatos()) {
+    casilla.input.addEventListener("change", () => {
+      if (casilla.input.checked) casilla.input.closest('.casilla-obligatoria')?.classList.remove('campo-error');
+    });
+  }
 });
 
 // Verificar si el canvas tiene firma
@@ -161,6 +173,18 @@ function parsearFecha(fechaStr) {
   
   console.warn("⚠️ No se pudo parsear la fecha");
   return { dia: "", mes: "", anio: "" };
+}
+
+// Casillas obligatorias del bloque de protección de datos. Las plantillas las traen ya marcadas,
+// así que el PDF solo se genera si la persona las ha marcado en la web.
+function casillasProteccionDatos() {
+  const definicion = [
+    { id: "consiente-tratamiento", clave: "consienteTratamiento", error: "Casilla de consentimiento del tratamiento de datos" },
+    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" }
+  ];
+  return definicion
+    .map(c => ({ ...c, input: document.getElementById(c.id) }))
+    .filter(c => c.input);
 }
 
 // Validar formulario
@@ -207,7 +231,18 @@ function validarFormulario() {
   if (!tieneCanvasFirma()) {
     errores.push("Firma manuscrita");
   }
-  
+
+  // Las dos casillas de protección de datos son obligatorias: sin ellas no se presta el servicio.
+  for (const casilla of casillasProteccionDatos()) {
+    const contenedor = casilla.input.closest('.casilla-obligatoria');
+    if (!casilla.input.checked) {
+      errores.push(casilla.error);
+      contenedor?.classList.add('campo-error');
+    } else {
+      contenedor?.classList.remove('campo-error');
+    }
+  }
+
   // Mostrar errores en panel
   const panelErrores = document.getElementById("errores-validacion");
   if (errores.length > 0) {
@@ -367,9 +402,9 @@ async function escribirDatosDirectamente(pdfDoc, datos, fechaParsed, coordenadas
       console.log("✓ Página 1 completada");
     }
 
-    // Página 3: fecha de firma y firma
-    if (pages.length > 2) {
-      const page3 = pages[2];
+    // Última página: fecha de firma y firma
+    if (pages.length > 1) {
+      const page3 = pages[pages.length - 1];
       const fontSize = 11;
       const color = rgb(0, 0, 0);
 
@@ -408,7 +443,7 @@ async function escribirDatosDirectamente(pdfDoc, datos, fechaParsed, coordenadas
       });
       console.log("✓ Año firma escrito:", anioFirma, "en", coordenadasFirma.firmaFechaAnio);
 
-      console.log("✓ Página 3 completada");
+      console.log("✓ Página de firmas completada");
     }
 
     console.log("✓✓✓ Todos los datos escritos correctamente ✓✓✓");
@@ -432,8 +467,8 @@ async function anadirFirma(pdfDoc, coordenadasFirma) {
     const firmaImage = await pdfDoc.embedPng(firmaBytes);
 
     const pages = pdfDoc.getPages();
-    if (pages.length > 2) {
-      const page3 = pages[2];
+    if (pages.length > 1) {
+      const page3 = pages[pages.length - 1];
 
       const maxWidth = 180;
       const maxHeight = 60;
@@ -462,9 +497,17 @@ async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
     const mesFirma = document.getElementById("mes")?.value || "";
     const anioFirma = document.getElementById("anio")?.value || "";
 
+    const casillas = casillasProteccionDatos();
+    const proteccionDatos = casillas.length
+      ? {
+          clausulas: document.getElementById("proteccion-datos")?.dataset.clausulas || "",
+          ...Object.fromEntries(casillas.map(c => [c.clave, c.input.checked]))
+        }
+      : undefined;
+
     const datosEstructurados = {
       tipo: "consentimiento-individual",
-      version: 2,
+      version: proteccionDatos ? 3 : 2,
       nombre: datos.nombre,
       apellidos: datos.apellidos,
       nombreApellidos: datos.nombreApellidos,
@@ -476,6 +519,7 @@ async function adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed) {
       codigoPostal: datos.codigoPostal,
       lugar: datos.lugar,
       fechaFirma: `${diaFirma}/${mesFirma}/${anioFirma}`,
+      proteccionDatos,
       generadoEl: new Date().toISOString()
     };
 

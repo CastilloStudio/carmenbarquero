@@ -256,25 +256,27 @@
   border-radius: 4px;
 }
 
+/* «Repetir firma»: un enlace discreto, no un botón. Está entre la firma y «Confirmar»,
+   y con aspecto de botón se pulsaba sin querer, sobre todo en el móvil. */
 .btn-limpiar-firma {
-  margin-top: 1rem;
-  padding: 8px 16px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  display: block;
+  margin: 0.4rem 0 0 auto;
+  padding: 4px 2px;
+  background: none;
+  border: none;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #666;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 0.8rem;
+  color: #888;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .btn-limpiar-firma:hover {
-  background: #f0f0f0;
-  border-color: #999;
-  color: #333;
+  color: #444;
+}
+
+.btn-limpiar-firma[hidden] {
+  display: none;
 }
 
 /* Botón confirmar mejorado */
@@ -385,6 +387,57 @@
   margin-top: 0;
   margin-bottom: 1rem;
   color: var(--color-principal, #3a4a5a);
+}
+
+/* Bloque de protección de datos y sus dos casillas obligatorias */
+.bloque-proteccion-datos {
+  background: #f0f4f8;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--color-principal, #3a4a5a);
+  font-size: 0.95em;
+}
+
+.bloque-proteccion-datos h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--color-principal, #3a4a5a);
+}
+
+.casilla-obligatoria {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 1rem 0 0.5rem;
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid #c9d3dd;
+  border-radius: 6px;
+}
+
+.casilla-obligatoria input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.casilla-obligatoria label {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.casilla-obligatoria.campo-error {
+  border: 2px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+.casillas-nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.9em;
+  font-style: italic;
 }
 
 /* Responsive */
