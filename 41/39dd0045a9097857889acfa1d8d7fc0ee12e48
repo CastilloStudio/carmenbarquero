@@ -1,0 +1,29 @@
+consentimientoinformado-pareja.html
+  s_7ef21f5ba66c3c::t_25f2809c2a1cc0 234,242
+consentimientoinformado.html
+  s_7ef21f5ba66c3c::t_e2d57bb709301b 165
+css/consentimiento.css
+  s_7ef21f5ba66c3c::t_618f7d8f36537f 259-260,262-266,268-271,275-279
+ficha-clinica.html
+  s_7ef21f5ba66c3c::t_8cb996cf54413f 166
+js/pdf-fill-pareja.js
+  s_7ef21f5ba66c3c::t_710638d5cfe11b 40-41,60,77,93,95
+js/pdf-fill.js
+  s_7ef21f5ba66c3c::t_4b2104b3e653ae 58-59,62,80,96-97,99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4139dd0045a9097857889acfa1d8d7fc0ee12e48",
+  "prompts": {},
+  "sessions": {
+    "s_7ef21f5ba66c3c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "924e618a-c84a-4b9a-b372-ac7211a8d436",
+        "model": "unknown"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
