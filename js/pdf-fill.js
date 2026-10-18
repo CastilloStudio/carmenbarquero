@@ -15,21 +15,21 @@ const coordenadas = {
   codigoPostal: { x: 178, y: 473 }
 };
 
-// Página 3 (firma) difiere entre plantillas por el distinto texto de cada una
+// La firma va en la última página (la 4) y su altura difiere entre plantillas por el distinto texto de cada una
 const coordenadasFirmaPorPlantilla = {
   actual: {
-    lugar: { x: 123, y: 579 },
-    firmaFechaDia: { x: 235, y: 579 },
-    firmaFechaMes: { x: 273, y: 579 },
-    firmaFechaAnio: { x: 366, y: 579 },
-    firmaImagen: { x: 115, y: 470 }
+    lugar: { x: 123, y: 616 },
+    firmaFechaDia: { x: 235, y: 616 },
+    firmaFechaMes: { x: 273, y: 616 },
+    firmaFechaAnio: { x: 366, y: 616 },
+    firmaImagen: { x: 115, y: 507 }
   },
   anterior: {
-    lugar: { x: 123, y: 553 },
-    firmaFechaDia: { x: 235, y: 553 },
-    firmaFechaMes: { x: 273, y: 553 },
-    firmaFechaAnio: { x: 366, y: 553 },
-    firmaImagen: { x: 115, y: 444 }
+    lugar: { x: 123, y: 603 },
+    firmaFechaDia: { x: 235, y: 603 },
+    firmaFechaMes: { x: 273, y: 603 },
+    firmaFechaAnio: { x: 366, y: 603 },
+    firmaImagen: { x: 115, y: 494 }
   }
 };
 // --- Firma manuscrita en canvas ---
@@ -170,7 +170,8 @@ function parsearFecha(fechaStr) {
   return { dia: "", mes: "", anio: "" };
 }
 
-// Casillas obligatorias del bloque de protección de datos (vacío si la página no lo tiene)
+// Casillas obligatorias del bloque de protección de datos. Las plantillas las traen ya marcadas,
+// así que el PDF solo se genera si la persona las ha marcado en la web.
 function casillasProteccionDatos() {
   const definicion = [
     { id: "consiente-tratamiento", clave: "consienteTratamiento", error: "Casilla de consentimiento del tratamiento de datos" },
@@ -227,7 +228,6 @@ function validarFormulario() {
   }
 
   // Las dos casillas de protección de datos son obligatorias: sin ellas no se presta el servicio.
-  // Solo existen en el consentimiento individual; la ficha clínica comparte este script y no las lleva.
   for (const casilla of casillasProteccionDatos()) {
     const contenedor = casilla.input.closest('.casilla-obligatoria');
     if (!casilla.input.checked) {
@@ -325,7 +325,6 @@ async function generatePDF() {
     // Rellenar el PDF
     const coordenadasFirma = usarAnterior ? coordenadasFirmaPorPlantilla.anterior : coordenadasFirmaPorPlantilla.actual;
     await rellenarPDFOriginal(pdfDoc, datos, fechaParsed, coordenadasFirma);
-    await anadirPaginaProteccionDatos(pdfDoc, datos);
 
     // Adjuntar los datos en formato estructurado (JSON) para que otra app pueda recuperarlos
     await adjuntarDatosEstructurados(pdfDoc, datos, fechaParsed);
@@ -398,9 +397,9 @@ async function escribirDatosDirectamente(pdfDoc, datos, fechaParsed, coordenadas
       console.log("✓ Página 1 completada");
     }
 
-    // Página 3: fecha de firma y firma
-    if (pages.length > 2) {
-      const page3 = pages[2];
+    // Última página: fecha de firma y firma
+    if (pages.length > 1) {
+      const page3 = pages[pages.length - 1];
       const fontSize = 11;
       const color = rgb(0, 0, 0);
 
@@ -439,7 +438,7 @@ async function escribirDatosDirectamente(pdfDoc, datos, fechaParsed, coordenadas
       });
       console.log("✓ Año firma escrito:", anioFirma, "en", coordenadasFirma.firmaFechaAnio);
 
-      console.log("✓ Página 3 completada");
+      console.log("✓ Página de firmas completada");
     }
 
     console.log("✓✓✓ Todos los datos escritos correctamente ✓✓✓");
@@ -463,8 +462,8 @@ async function anadirFirma(pdfDoc, coordenadasFirma) {
     const firmaImage = await pdfDoc.embedPng(firmaBytes);
 
     const pages = pdfDoc.getPages();
-    if (pages.length > 2) {
-      const page3 = pages[2];
+    if (pages.length > 1) {
+      const page3 = pages[pages.length - 1];
 
       const maxWidth = 180;
       const maxHeight = 60;
@@ -484,103 +483,6 @@ async function anadirFirma(pdfDoc, coordenadasFirma) {
   } catch (error) {
     console.log("❌ Error al añadir firma:", error);
   }
-}
-
-// Añadir al final del PDF la página de protección de datos: el texto del bloque tal como se ve en la
-// web, las dos casillas marcadas y la firma. La plantilla no tiene sitio para este texto.
-async function anadirPaginaProteccionDatos(pdfDoc, datos) {
-  const bloque = document.getElementById("proteccion-datos");
-  if (!bloque) return;
-
-  const { rgb, StandardFonts } = PDFLib;
-  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const negrita = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const color = rgb(0, 0, 0);
-  const ancho = 595.28, alto = 841.89, margen = 50;
-  const anchoTexto = ancho - 2 * margen;
-  const tamano = 9.5, interlineado = 13;
-
-  let page = pdfDoc.addPage([ancho, alto]);
-  let y = alto - margen;
-  const asegurarEspacio = (necesario) => {
-    if (y - necesario < margen) {
-      page = pdfDoc.addPage([ancho, alto]);
-      y = alto - margen;
-    }
-  };
-  const limpiar = (texto) => texto.replace(/\s+/g, " ").trim();
-
-  // Escribe un párrafo con un prefijo en negrita, partiendo las líneas por palabras
-  const parrafo = (enNegrita, resto, x = margen, anchoMax = anchoTexto) => {
-    const palabras = [
-      ...limpiar(enNegrita).split(" ").filter(Boolean).map(p => ({ p, font: negrita })),
-      ...limpiar(resto).split(" ").filter(Boolean).map(p => ({ p, font: regular }))
-    ];
-    const espacio = regular.widthOfTextAtSize(" ", tamano);
-    let linea = [], anchoLinea = 0;
-    const volcar = () => {
-      asegurarEspacio(interlineado);
-      let cx = x;
-      for (const { p, font } of linea) {
-        page.drawText(p, { x: cx, y: y - tamano, size: tamano, font, color });
-        cx += font.widthOfTextAtSize(p, tamano) + espacio;
-      }
-      y -= interlineado;
-      linea = [];
-      anchoLinea = 0;
-    };
-    for (const palabra of palabras) {
-      const w = palabra.font.widthOfTextAtSize(palabra.p, tamano);
-      if (linea.length && anchoLinea + espacio + w > anchoMax) volcar();
-      anchoLinea += (linea.length ? espacio : 0) + w;
-      linea.push(palabra);
-    }
-    if (linea.length) volcar();
-    y -= 5;
-  };
-
-  const titulo = limpiar(bloque.querySelector("h3")?.textContent || "Protección de datos personales");
-  page.drawText(titulo, { x: margen, y: y - 14, size: 14, font: negrita, color });
-  y -= 30;
-
-  for (const p of bloque.querySelectorAll(":scope > p:not(.casillas-nota)")) {
-    const etiqueta = p.querySelector("strong")?.textContent || "";
-    parrafo(etiqueta, p.textContent.replace(etiqueta, ""));
-  }
-
-  y -= 6;
-  for (const casilla of casillasProteccionDatos()) {
-    asegurarEspacio(3 * interlineado);
-    const lado = 9, xCasilla = margen, yCasilla = y - lado - 1;
-    page.drawRectangle({ x: xCasilla, y: yCasilla, width: lado, height: lado, borderColor: color, borderWidth: 0.8 });
-    if (casilla.input.checked) {
-      page.drawLine({ start: { x: xCasilla + 1.5, y: yCasilla + 1.5 }, end: { x: xCasilla + lado - 1.5, y: yCasilla + lado - 1.5 }, thickness: 1.2, color });
-      page.drawLine({ start: { x: xCasilla + 1.5, y: yCasilla + lado - 1.5 }, end: { x: xCasilla + lado - 1.5, y: yCasilla + 1.5 }, thickness: 1.2, color });
-    }
-    const etiqueta = document.querySelector(`label[for="${casilla.id}"]`)?.textContent || "";
-    parrafo("", etiqueta, margen + lado + 8, anchoTexto - lado - 8);
-  }
-
-  // Quién firma y cuándo, con la misma firma que la página de firmas de la plantilla
-  const diaFirma = document.getElementById("dia")?.value || "";
-  const mesFirma = document.getElementById("mes")?.value || "";
-  const anioFirma = document.getElementById("anio")?.value || "";
-  asegurarEspacio(120);
-  y -= 10;
-  parrafo("Paciente:", `${datos.nombreApellidos} — DNI/NIE: ${datos.dni}`);
-  parrafo("", `En ${datos.lugar}, a ${diaFirma} de ${mesFirma} de ${anioFirma}`);
-  parrafo("Firma del paciente:", "");
-
-  const canvas = document.getElementById("canvas-firma");
-  if (canvas && tieneCanvasFirma()) {
-    const firmaBytes = await fetch(canvas.toDataURL("image/png")).then(res => res.arrayBuffer());
-    const firmaImage = await pdfDoc.embedPng(firmaBytes);
-    const ratio = Math.min(180 / firmaImage.width, 60 / firmaImage.height);
-    const firmaHeight = firmaImage.height * ratio;
-    page.drawImage(firmaImage, { x: margen, y: y - firmaHeight, width: firmaImage.width * ratio, height: firmaHeight });
-  }
-
-  console.log("✓ Página de protección de datos añadida");
 }
 
 // Adjuntar datos estructurados (JSON) embebidos en el PDF para recuperación programática

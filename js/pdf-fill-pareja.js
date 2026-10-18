@@ -1,35 +1,35 @@
 // === Generador de PDF de Consentimiento Informado - Terapia de Pareja ===
 const coordenadasPareja = {
   // Página 1 - Persona 1
-  nombre1:       { x: 159, y: 527 },
-  apellidos1:    { x: 162, y: 512 },
-  dni1:          { x: 157, y: 497 },
-  dia1:          { x: 213, y: 481 },
-  mes1:          { x: 245, y: 481 },
-  anio1:         { x: 276, y: 481 },
-  telefono1:     { x: 216, y: 466 },
-  email1:        { x: 195, y: 450 },
-  domicilio1:    { x: 160, y: 435 },
-  codigoPostal1: { x: 180, y: 419 },
+  nombre1:       { x: 159, y: 526 },
+  apellidos1:    { x: 162, y: 511 },
+  dni1:          { x: 157, y: 496 },
+  dia1:          { x: 213, y: 480 },
+  mes1:          { x: 245, y: 480 },
+  anio1:         { x: 276, y: 480 },
+  telefono1:     { x: 216, y: 465 },
+  email1:        { x: 200, y: 449 },
+  domicilio1:    { x: 160, y: 434 },
+  codigoPostal1: { x: 180, y: 418 },
   // Página 1 - Persona 2
-  nombre2:       { x: 159, y: 368 },
-  apellidos2:    { x: 162, y: 353 },
-  dni2:          { x: 157, y: 337 },
-  dia2:          { x: 213, y: 322 },
-  mes2:          { x: 245, y: 322 },
-  anio2:         { x: 276, y: 322 },
-  telefono2:     { x: 216, y: 307 },
-  email2:        { x: 195, y: 291 },
-  domicilio2:    { x: 160, y: 276 },
-  codigoPostal2: { x: 180, y: 260 },
-  // Página 3 - Fecha de firma (línea "En __, a __ de...")
-  lugar:         { x: 123, y: 612 },
-  firmaFechaDia: { x: 235, y: 612 },
-  firmaFechaMes: { x: 273, y: 612 },
-  firmaFechaAnio:{ x: 366, y: 612 },
-  // Página 3 - Firmas lado a lado
-  firmaImagen1:  { x: 80,  y: 503 },
-  firmaImagen2:  { x: 310, y: 503 },
+  nombre2:       { x: 159, y: 367 },
+  apellidos2:    { x: 162, y: 352 },
+  dni2:          { x: 157, y: 336 },
+  dia2:          { x: 213, y: 321 },
+  mes2:          { x: 245, y: 321 },
+  anio2:         { x: 276, y: 321 },
+  telefono2:     { x: 216, y: 306 },
+  email2:        { x: 200, y: 290 },
+  domicilio2:    { x: 160, y: 275 },
+  codigoPostal2: { x: 180, y: 259 },
+  // Última página (la 4) - Fecha de firma (línea "En __, a __ de...")
+  lugar:         { x: 123, y: 626 },
+  firmaFechaDia: { x: 235, y: 626 },
+  firmaFechaMes: { x: 273, y: 626 },
+  firmaFechaAnio:{ x: 366, y: 626 },
+  // Última página - Firmas lado a lado
+  firmaImagen1:  { x: 80,  y: 517 },
+  firmaImagen2:  { x: 310, y: 517 },
 };
 
 function setupCanvas(canvasId, limpiarId) {
@@ -133,7 +133,26 @@ window.addEventListener("DOMContentLoaded", function () {
     mes.value = meses[hoy.getMonth()];
   }
   if (anio) anio.value = hoy.getFullYear();
+
+  // Al marcar una casilla obligatoria se quita la marca de error
+  for (const casilla of casillasProteccionDatos()) {
+    casilla.input.addEventListener("change", () => {
+      if (casilla.input.checked) casilla.input.closest('.casilla-obligatoria')?.classList.remove('campo-error');
+    });
+  }
 });
+
+// Casillas obligatorias del bloque de protección de datos. La plantilla las trae ya marcadas,
+// así que el PDF solo se genera si la pareja las ha marcado en la web.
+function casillasProteccionDatos() {
+  const definicion = [
+    { id: "consiente-tratamiento", clave: "consienteTratamiento", error: "Casilla de consentimiento del tratamiento de datos" },
+    { id: "autoriza-videoconferencia", clave: "autorizaVideoconferencia", error: "Casilla de autorización de la videoconferencia" }
+  ];
+  return definicion
+    .map(c => ({ ...c, input: document.getElementById(c.id) }))
+    .filter(c => c.input);
+}
 
 function tieneCanvasFirma(canvasId) {
   const canvas = document.getElementById(canvasId);
@@ -196,6 +215,17 @@ function validarFormulario() {
 
   if (!tieneCanvasFirma("canvas-firma-1")) errores.push("Firma de la primera persona");
   if (!tieneCanvasFirma("canvas-firma-2")) errores.push("Firma de la segunda persona");
+
+  // Las dos casillas de protección de datos son obligatorias: sin ellas no se presta el servicio.
+  for (const casilla of casillasProteccionDatos()) {
+    const contenedor = casilla.input.closest('.casilla-obligatoria');
+    if (!casilla.input.checked) {
+      errores.push(casilla.error);
+      contenedor?.classList.add('campo-error');
+    } else {
+      contenedor?.classList.remove('campo-error');
+    }
+  }
 
   const panelErrores = document.getElementById("errores-validacion");
   if (errores.length > 0) {
@@ -341,9 +371,9 @@ async function escribirDatosDirectamente(pdfDoc, datos1, datos2, fecha1, fecha2)
     console.log("✓ Página 1 completada");
   }
 
-  // Página 3: lugar y fecha de firma
-  if (pages.length > 2) {
-    const page3 = pages[2];
+  // Última página: lugar y fecha de firma
+  if (pages.length > 1) {
+    const page3 = pages[pages.length - 1];
     const diaFirma  = document.getElementById("dia")?.value  || "";
     const mesFirma  = document.getElementById("mes")?.value  || "";
     const anioFirma = document.getElementById("anio")?.value || "";
@@ -358,7 +388,7 @@ async function escribirDatosDirectamente(pdfDoc, datos1, datos2, fecha1, fecha2)
     draw3(mesFirma, coordenadasPareja.firmaFechaMes);
     draw3(anioFirma,coordenadasPareja.firmaFechaAnio);
 
-    console.log("✓ Página 3 completada");
+    console.log("✓ Página de firmas completada");
   }
 }
 
@@ -375,8 +405,8 @@ async function embedFirma(pdfDoc, canvasId, coords) {
     const firmaImage   = await pdfDoc.embedPng(firmaBytes);
 
     const pages = pdfDoc.getPages();
-    if (pages.length > 2) {
-      const page3 = pages[2];
+    if (pages.length > 1) {
+      const page3 = pages[pages.length - 1];
       const maxWidth = 180;
       const maxHeight = 60;
       const ratio = Math.min(maxWidth / firmaImage.width, maxHeight / firmaImage.height);
@@ -408,9 +438,17 @@ async function adjuntarDatosEstructurados(pdfDoc, datos1, datos2, fecha1, fecha2
     const anioFirma = document.getElementById("anio")?.value || "";
     const lugar = document.getElementById("lugar")?.value || "";
 
+    const casillas = casillasProteccionDatos();
+    const proteccionDatos = casillas.length
+      ? {
+          clausulas: document.getElementById("proteccion-datos")?.dataset.clausulas || "",
+          ...Object.fromEntries(casillas.map(c => [c.clave, c.input.checked]))
+        }
+      : undefined;
+
     const datosEstructurados = {
       tipo: "consentimiento-pareja",
-      version: 2,
+      version: proteccionDatos ? 3 : 2,
       lugar,
       fechaFirma: `${diaFirma}/${mesFirma}/${anioFirma}`,
       persona1: {
@@ -435,6 +473,7 @@ async function adjuntarDatosEstructurados(pdfDoc, datos1, datos2, fecha1, fecha2
         domicilio: datos2.domicilio,
         codigoPostal: datos2.codigoPostal
       },
+      proteccionDatos,
       generadoEl: new Date().toISOString()
     };
 
