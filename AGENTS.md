@@ -49,12 +49,13 @@ Es una decisión de diseño, no una casualidad: **no añadas ahí una llamada de
 Los PDF de `docs/` son **plantillas en blanco**. No se sube a este repositorio ningún
 documento relleno.
 
-**Las plantillas traen las casillas de protección de datos ya marcadas** (☑): vienen
-así de la consultora. Lo que impide un consentimiento que nadie ha dado es que el
-script no genera el PDF sin las dos casillas marcadas en la web. Toda página que use
+**Las plantillas traen sus tres casillas ya marcadas** (☑): las dos de protección de
+datos y la de conformidad del final. Vienen así de la consultora. Lo que impide un
+consentimiento que nadie ha dado es que el script no genera el PDF sin las tres
+marcadas en la web, y la página sigue el mismo orden que el PDF. Toda página que use
 una plantilla (`consentimientoinformado.html`, `ficha-clinica.html` y
 `consentimientoinformado-pareja.html`) tiene que llevar el bloque «Protección de
-datos personales» con sus casillas.
+datos personales» con sus casillas y la casilla de conformidad.
 
 **Los datos se escriben por coordenadas**, no en campos del PDF. Al sustituir una
 plantilla hay que recolocarlos (`pdftotext -bbox` da la posición de cada línea) y
