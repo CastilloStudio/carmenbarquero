@@ -8,10 +8,15 @@
  *   sea el mismo en todas las páginas.
  * - Cualquier elemento con [data-cookie-settings] abre el panel (enlace del footer,
  *   botón de la política de cookies), para poder cambiar o retirar el consentimiento.
+ * - Con <script ... data-sin-analitica> (consentimientos y ficha clínica) la página
+ *   pregunta y guarda la elección igual, pero no carga GTM aunque se acepte.
  */
 
 (function() {
   'use strict';
+
+  // Se lee ahora: con defer, document.currentScript solo existe durante la ejecución
+  const sinAnalitica = !!(document.currentScript && document.currentScript.hasAttribute('data-sin-analitica'));
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function() { dataLayer.push(arguments); };
@@ -85,7 +90,7 @@
     },
 
     applyConsent: function(granted) {
-      window['ga-disable-' + this.config.gaId] = !granted;
+      window['ga-disable-' + this.config.gaId] = sinAnalitica || !granted;
       gtag('consent', 'update', {
         'analytics_storage': granted ? 'granted' : 'denied'
       });
@@ -98,7 +103,7 @@
     },
 
     loadGTM: function() {
-      if (this.gtmLoaded) return;
+      if (sinAnalitica || this.gtmLoaded) return;
       this.gtmLoaded = true;
 
       dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -183,7 +188,9 @@
             '</div>' +
             '<p class="cookie-category-description">Nos dicen cuántas visitas recibe la web, qué páginas se ' +
             'consultan y desde qué tipo de dispositivo, sin identificarte por tu nombre. ' +
-            'Proveedor: Google. Duración: hasta 2 años. Solo se activan si las aceptas.</p>' +
+            'Proveedor: Google. Duración: hasta 2 años. Solo se activan si las aceptas.' +
+            (sinAnalitica ? ' En esta página no se usan en ningún caso, aunque las aceptes.' : '') +
+            '</p>' +
           '</div>' +
           '<div class="cookie-settings-footer">' +
             '<button type="button" class="cookie-consent-btn cookie-consent-btn-modal" data-cc="reject">Rechazar todas</button>' +
