@@ -1,0 +1,25 @@
+consentimientoinformado-pareja.html
+  s_e100e75511148f::t_279f100f2c1b6a 4-6,19
+consentimientoinformado.html
+  s_e100e75511148f::t_b15a4732ab8dd2 4-6,19
+ficha-clinica.html
+  s_e100e75511148f::t_60a4722d3f1a07 4-6,19
+js/cookie-consent.js
+  s_e100e75511148f::t_46c3aa4f6eeba6 11-12,18-20,93,106,191-193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "013a848ce89bffbdee0d1bd1c84b4a657f0b8b68",
+  "prompts": {},
+  "sessions": {
+    "s_e100e75511148f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "90d6de34-c728-47aa-a1ae-c88025ec803f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Emilio <emiliocastillogonzalez@gmail.com>"
+    }
+  }
+}
