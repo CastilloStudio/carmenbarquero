@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <!-- Sin analítica en esta página: el paciente introduce datos de salud, DNI y firma -->
+    <!-- Sin analítica en esta página: el paciente introduce datos de salud, DNI y firma.
+         El aviso de cookies sí está, pero data-sin-analitica impide que cargue GTM aunque se acepte -->
+    <script src="js/cookie-consent.js" data-sin-analitica defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
@@ -14,6 +16,7 @@
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/consentimiento.css" />
     <link rel="stylesheet" href="css/footer.css" />
+    <link rel="stylesheet" href="css/cookie-consent.css" />
     <!-- Librería pdf-lib para rellenar el PDF original -->
     <script src="js/pdf-lib.min.js"></script>
     <script src="js/pdf-fill.js" defer></script>
